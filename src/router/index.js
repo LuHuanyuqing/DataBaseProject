@@ -30,7 +30,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
+export const constantRoutes = [  //路由数组
   {
     path: '/login',
     component: () => import('@/views/login/index'),
@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' ,affix: true }
     }]
   },
 
@@ -74,6 +74,56 @@ export const constantRoutes = [
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree' }
       }
+    ]
+  },
+
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/user',  //重定向
+    name: 'SystemManage',  //路由名字
+    meta: { title: '系统管理', icon: '系统管理' },  //标题及图标
+    children: [  //子路由数组
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/system/user'),  //跳转组件
+        meta: { title: 'User', icon: '用户' }
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/system/role'),
+        meta: { title: 'Role', icon: '角色' }
+      }
+    ]
+  },
+
+  {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/test1',  //重定向
+    name: 'TestModule',  //路由名字
+    meta: { title: '测试模块', icon: '测试' },  //标题及图标
+    children: [  //子路由数组
+      {
+        path: 'test1',
+        name: 'Test1',
+        component: () => import('@/views/test/test1'),  //跳转组件
+        meta: { title: 'Test1', icon: '测试' }
+      },
+      {
+        path: 'test2',
+        name: 'Test2',
+        component: () => import('@/views/test/test2'),  //跳转组件
+        meta: { title: 'Test2', icon: '测试' }
+      },
+      {
+        path: 'test3',
+        name: 'Test3',
+        component: () => import('@/views/test/test3'),  //跳转组件
+        meta: { title: 'Test3', icon: '测试' }
+      },
     ]
   },
 

@@ -175,7 +175,7 @@ $cursor: #fff;
 <style lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
-$light_gray:#eee;
+$light_gray: #ffffff;
 
 .login-container {
   min-height: 100%;
@@ -183,13 +183,21 @@ $light_gray:#eee;
   background-color: $bg;
   overflow: hidden;
 
+  background-image: url("../../assets/loginbackground.jpg");  //登录页面背景图
+
+  display: flex;
+  align-items: center;
+
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 35px 35px 0;  //边框填充
     margin: 0 auto;
     overflow: hidden;
+    background-color: #5a5e66;  //登录框背景颜色
+    border-radius: 8px;  //添加背景框角的弧度
+    opacity: 0.8;  //背景框透明度
   }
 
   .tips {
