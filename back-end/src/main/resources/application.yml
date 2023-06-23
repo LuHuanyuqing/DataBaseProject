@@ -1,11 +1,11 @@
-server:  #??
+server:
   port: 9999
 
 spring:
   datasource:
     username: root
-    password: 123456
-    url: jdbc:mysql://
+    password: Lqh2013466641
+    url: jdbc:mysql:///lqhdatabase
   redis:
     port: 6379
     host: localhost
