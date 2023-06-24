@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +64,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             data.put("avatar", loginStudent.getSno()); //头像对应学号
 
             //角色 //角色对应选课
-            data.put();
+            List<String> courseList = this.baseMapper.getCourseCnameByStudentSno(loginStudent.getSno());
+            data.put("courses", courseList);
+
+            return data;
         }
         return null;
     }
