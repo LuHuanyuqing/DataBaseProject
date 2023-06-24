@@ -3,6 +3,8 @@ package com.lqh.system.service;
 import com.lqh.system.entity.Student;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Map;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IStudentService extends IService<Student> {
 
+    Map<String, Object> login(Student student);
+
+    Map<String, Object> geStudentInfo(String token);
 }
