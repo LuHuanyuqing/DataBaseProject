@@ -8,12 +8,12 @@ import java.util.Collections;
 
 public class CodeGenerator {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://";
+        String url = "jdbc:mysql:///lqhdatabase";
         String username = "root";
-        String password = "123456";
+        String password = "Lqh2013466641";
         String moduleName = "system";
         String mapperLocation = "D:\\JetBrains\\IdeaProjects\\GenealogyManagementSystem\\back-end\\src\\main\\resources\\mapper\\" + moduleName;
-        String tables = "表1,表2,表3";
+        String tables = "student,course,sc";
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> {
