@@ -20,6 +20,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/student")
+//@CrossOrigin    跨域处理
 public class StudentController {
     @Autowired
     private IStudentService studentService;

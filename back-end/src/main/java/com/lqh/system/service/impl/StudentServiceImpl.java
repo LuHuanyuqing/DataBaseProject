@@ -34,7 +34,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         //根据学号进行查询
         LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Student::getSno, student.getSno());
-        wrapper.eq(Student::getSno, student.getSno());
+        wrapper.eq(Student::getSname, student.getSname());
         Student loginStudent = this.baseMapper.selectOne(wrapper);
         //结果不为空, 则生成token, 并将用户信息存入redis
         if(loginStudent != null){
