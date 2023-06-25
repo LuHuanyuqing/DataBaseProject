@@ -18,4 +18,6 @@ public interface IStudentService extends IService<Student> {
     Map<String, Object> login(Student student);
 
     Map<String, Object> geStudentInfo(String token);
+
+    void logout(String token);
 }

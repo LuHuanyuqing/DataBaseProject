@@ -71,4 +71,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return null;
     }
+
+    @Override
+    public void logout(String token) {
+        redisTemplate.delete(token);
+    }
 }
