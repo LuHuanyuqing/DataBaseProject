@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard', affix: true }
     }]
   },
 
@@ -73,6 +73,56 @@ export const constantRoutes = [
         name: 'Tree',
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/sys',
+    component: Layout,
+    redirect: '/sys/user',
+    name: 'sysManage',
+    meta: { title: '系统管理', icon: 'sys' },
+    children: [
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('@/views/sys/user.vue'),
+        meta: { title: '用户管理', icon: 'userManage' }
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/sys/role.vue'),
+        meta: { title: '角色管理', icon: 'roleManage' }
+      }
+    ]
+  },
+
+  {
+    path: '/test',
+    component: Layout,
+    redirect: '/test/test1',
+    name: 'test',
+    meta: { title: '测试模块', icon: 'test' },
+    children: [
+      {
+        path: 'test1',
+        name: 'Test1',
+        component: () => import('@/views/test/test1.vue'),
+        meta: { title: '功能一', icon: 'test' }
+      },
+      {
+        path: 'test2',
+        name: 'Test2',
+        component: () => import('@/views/test/test2.vue'),
+        meta: { title: '功能二', icon: 'test' }
+      },
+      {
+        path: 'test3',
+        name: 'Test3',
+        component: () => import('@/views/test/test3.vue'),
+        meta: { title: '功能三', icon: 'test' }
       }
     ]
   },
