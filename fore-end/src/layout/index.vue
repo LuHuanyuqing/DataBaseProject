@@ -5,7 +5,6 @@
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
-        <tags-view />
       </div>
       <app-main />
     </div>
@@ -13,16 +12,15 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain ,TagsView} from './components'  //导入组件
+import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 
-export default {  //注册组件
+export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
-    AppMain,
-    TagsView
+    AppMain
   },
   mixins: [ResizeMixin],
   computed: {

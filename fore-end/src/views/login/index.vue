@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">家谱管理系统登录</h3>
+        <h3 class="title">Login Form</h3>
       </div>
 
       <el-form-item prop="username">
@@ -13,7 +13,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="用户名"
+          placeholder="Username"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +30,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="密码"
+          placeholder="Password"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -41,12 +41,12 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登 录</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-<!--      <div class="tips">-->
-<!--        <span style="margin-right:20px;">username: admin</span>-->
-<!--        <span> password: any</span>-->
-<!--      </div>-->
+      <div class="tips">
+        <span style="margin-right:20px;">username: admin</span>
+        <span> password: any</span>
+      </div>
 
     </el-form>
   </div>
@@ -60,14 +60,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+        callback(new Error('Please enter the correct user name'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('密码不能少于6位'))
+        callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
       }
@@ -75,7 +75,7 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '123456'
+        password: '111111'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -175,7 +175,7 @@ $cursor: #fff;
 <style lang="scss" scoped>
 $bg:#2d3a4b;
 $dark_gray:#889aa4;
-$light_gray: #ffffff;
+$light_gray:#eee;
 
 .login-container {
   min-height: 100%;
@@ -183,21 +183,13 @@ $light_gray: #ffffff;
   background-color: $bg;
   overflow: hidden;
 
-  background-image: url("../../assets/loginbackground.jpg");  //登录页面背景图
-
-  display: flex;
-  align-items: center;
-
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 35px 35px 0;  //边框填充
+    padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
-    background-color: #5a5e66;  //登录框背景颜色
-    border-radius: 8px;  //添加背景框角的弧度
-    opacity: 0.8;  //背景框透明度
   }
 
   .tips {
