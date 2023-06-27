@@ -4,9 +4,9 @@
     <el-card id="search">
       <el-row>
         <el-col :span="20">
-          <el-input v-model="searchModel.username" placeholder="用户名" />
-          <el-input v-model="searchModel.phone" placeholder="电话" />
-          <el-button type="primary" round icon="el-icon-search">查询</el-button>
+          <el-input v-model="searchModel.username" placeholder="用户名" clearable />
+          <el-input v-model="searchModel.phone" placeholder="电话" clearable />
+          <el-button type="primary" round icon="el-icon-search" @click="getUserList">查询</el-button>
         </el-col>
         <el-col :span="4" align="right">
           <el-button type="primary" icon="el-icon-plus" circle />
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import userApi from '@/api/userManage'
 export default {
   data() {
     return {
@@ -50,12 +51,23 @@ export default {
       userList: []
     }
   },
+  created() {
+    this.getUserList()
+  },
   methods: {
-    handleSizeChange() {
-
+    handleSizeChange(pageSize) {
+      this.searchModel.pageSize = pageSize
+      this.getUserList()
     },
-    handleCurrentChange() {
-
+    handleCurrentChange(pageNo) {
+      this.searchModel.pageNo = pageNo
+      this.getUserList()
+    },
+    getUserList() {
+      userApi.getUserList(this.searchModel).then(response => {
+        this.userList = response.data.rows
+        this.total = response.data.total
+      })
     }
   }
 }
