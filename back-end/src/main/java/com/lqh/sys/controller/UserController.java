@@ -20,6 +20,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/user")
+// @CrossOrigin  跨域处理
 public class UserController {
     @Autowired
     private IUserService userService;
@@ -46,6 +47,13 @@ public class UserController {
             return Result.success(data);
         }
         return Result.fail(20003, "登录信息无效，请重新登录");
+    }
+
+    @PostMapping("/logout")
+    public Result<?> logout(@RequestHeader("X-Token") String token){
+        userService.logout(token);
+
+        return Result.success();
     }
 
 }
