@@ -12,5 +12,38 @@ export default {
         phone: searchModel.phone
       }
     })
+  },
+  addUser(user) {
+    return request({
+      url: '/user',
+      method: 'post',
+      data: user
+    })
+  },
+  getUserById(id) {
+    return request({
+      // url: '/user/' + id,
+      url: `/user/${id}`,
+      method: 'get'
+    })
+  },
+  updateUser(user) {
+    return request({
+      url: '/user',
+      method: 'put',
+      data: user
+    })
+  },
+  saveUser(user) {
+    if (user.id == null && user.di === undefined) {
+      return this.addUser(user)
+    }
+    return this.updateUser(user)
+  },
+  deleteUserById(id) {
+    return request({
+      url: `/user/${id}`,
+      method: 'delete'
+    })
   }
 }
