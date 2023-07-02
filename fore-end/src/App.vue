@@ -1,11 +1,20 @@
-<script setup>
-
-</script>
-
 <template>
-  <router-view></router-view>
+  <div id="app">
+    <router-view />
+  </div>
 </template>
 
-<style scoped>
+<script>
+export default {
+  name: 'App'
+}
+</script>
 
+<style>
+.app-main{
+  padding: 10px;
+}
+.el-card{
+  margin-bottom: 10px;
+}
 </style>
