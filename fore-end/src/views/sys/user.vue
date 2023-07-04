@@ -1,195 +1,85 @@
 <template>
   <div>
-    <!-- 搜索栏  -->
-    <el-card id="search">
-      <el-row>
-        <el-col :span="20">
-          <el-input v-model="searchModel.username" placeholder="用户名" clearable />
-          <el-input v-model="searchModel.phone" placeholder="电话" clearable />
-          <el-button type="primary" round icon="el-icon-search" @click="getUserList">查询</el-button>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span style="width:40px;height:40px;line-height: 40px;">用户信息</span>
+        <el-button type="primary" icon="el-icon-edit" circle style="float:right" />
+      </div>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px; text-align: center">
+            姓名
+          </div>
         </el-col>
-        <el-col :span="4" align="right">
-          <el-button type="primary" icon="el-icon-plus" circle @click="openEditUI(null)" />
+        <el-col :span="20">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px">
+            张三
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px; text-align: center">
+            性别
+          </div>
+        </el-col>
+        <el-col :span="20">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px">
+            男
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px; text-align: center">
+            电话
+          </div>
+        </el-col>
+        <el-col :span="20">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px">
+            11111111111
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px; text-align: center">
+            邮箱
+          </div>
+        </el-col>
+        <el-col :span="20">
+          <div class="text item" style="line-height:2; box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); font-size:20px">
+            zhangsan@qq.com
+          </div>
         </el-col>
       </el-row>
     </el-card>
-
-    <!--  结果列表  -->
-    <el-card>
-      <el-table :data="userList" stripe style="width: 100%">
-        <el-table-column type="index" label="#" width="80" />
-        <el-table-column prop="id" label="用户ID" width="180" />
-        <el-table-column prop="username" label="用户名" width="180" />
-        <el-table-column prop="phone" label="电话" width="180" />
-        <el-table-column prop="status" label="用户状态" width="180">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 1">正常</el-tag>
-            <el-tag v-else type="danger">禁用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="email" label="电子邮件" />
-        <el-table-column label="操作" width="180">
-          <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="openEditUI(scope.row.id)" />
-            <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteUser(scope.row)" />
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
-
-    <!--  分页  -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="searchModel.pageNo"
-      :page-sizes="[5, 10, 20, 50]"
-      :page-size="searchModel.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total" />
-
-    <!--  用户信息编辑对话框  -->
-    <el-dialog :title="title" :visible.sync="dialogFormVisible" @close="clearForm">
-      <el-form ref="userFormRef" :model="userForm" :rules="rules">
-        <el-form-item label="用户名" prop="username" :label-width="formLabelWidth">
-          <el-input v-model="userForm.username" autocomplete="off" />
-        </el-form-item>
-        <el-form-item v-if="userForm.id === null || userForm.id === undefined" label="密码" prop="password" :label-width="formLabelWidth">
-          <el-input v-model="userForm.password" type="password" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth">
-          <el-input v-model="userForm.phone" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="电子邮件" prop="email" :label-width="formLabelWidth">
-          <el-input v-model="userForm.email" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="用户状态" :label-width="formLabelWidth">
-          <el-switch v-model="userForm.status" :active-value="1" :inactive-value="0" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveUser">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import userApi from '@/api/userManage'
-export default {
-  data() {
-    return {
-      formLabelWidth: '130px',
-      userForm: {},
-      dialogFormVisible: false,
-      title: ' ',
-      total: 0,
-      searchModel: {
-        pageNo: 1,
-        pageSize: 10
-      },
-      userList: [],
-      rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入初始密码', trigger: 'blur' },
-          { min: 6, max: 6, message: '登录密码为6位', trigger: 'blur' }
-        ],
-        email: [
-          { type: 'email', message: '电子邮件格式错误', trigger: 'blur' }
-        ]
-      }
-    }
-  },
-  created() {
-    this.getUserList()
-  },
-  methods: {
-    deleteUser(user) {
-      this.$confirm(`您确认删除用户 ${user.username} ?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        userApi.deleteUserById(user.id).then(response => {
-          this.$message({
-            type: 'success',
-            message: response.message
-          })
-          this.getUserList()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
-    saveUser() {
-      // 触发表单验证
-      this.$refs.userFormRef.validate((valid) => {
-        if (valid) {
-          // 提交请求给后台
-          userApi.saveUser(this.userForm).then(response => {
-            // 成功提示
-            this.$message({
-              message: response.message,
-              type: 'success'
-            })
-            // 关闭对话框
-            this.dialogFormVisible = false
-            // 刷新表格
-            this.getUserList()
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    clearForm() {
-      this.userForm = {}
-      this.$refs.userFormRef.clearValidate()
-    },
-    openEditUI(id) {
-      if (id == null) {
-        this.title = '新增用户'
-      } else {
-        this.title = '修改用户'
-        // 根据id查询用户数据
-        userApi.getUserById(id).then(response => {
-          this.userForm = response.data
-        })
-      }
-      this.dialogFormVisible = true
-    },
-    handleSizeChange(pageSize) {
-      this.searchModel.pageSize = pageSize
-      this.getUserList()
-    },
-    handleCurrentChange(pageNo) {
-      this.searchModel.pageNo = pageNo
-      this.getUserList()
-    },
-    getUserList() {
-      userApi.getUserList(this.searchModel).then(response => {
-        this.userList = response.data.rows
-        this.total = response.data.total
-      })
-    }
-  }
-}
+
 </script>
 
 <style>
-#search .el-input{
-  width: 200px;
-  margin-right: 10px;
+.text {
+  font-size: 14px;
 }
-.el-dialog .el-input{
-  width: 85%
+
+.item {
+  margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both
+}
+
+.box-card {
+  width: 480px;
 }
 </style>
