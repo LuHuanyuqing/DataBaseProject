@@ -1,20 +1,11 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+  export default {
+    name: 'App',
+    components: {
+    }
+  }
 </script>
-
-<style>
-.app-main{
-  padding: 10px;
-}
-.el-card{
-  margin-bottom: 10px;
-}
-</style>

@@ -1,109 +1,184 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from "vue-router"
 
-Vue.use(Router)
+import Login from '@/components/Login'
+import Regist from '@/components/Regist'
+import AddAdmin from '@/components/AddAdmin'
+import AdminManage from '@/components/AdminManage'
+import AdminView from '@/components/AdminView'
+import UpdateAdmin from '@/components/UpdateAdmin'
+import AdminIndex from '@/components/AdminIndex'
+import AddIncident from '@/components/AddIncident'
+import IncidentManage from '@/components/IncidentManage'
+import IncidentView from '@/components/IncidentView'
+import UpdateIncident from '@/components/UpdateIncident'
+import FamilyIncidentManage from '@/components/FamilyIncidentManage'
+import FamilyAddIncident from '@/components/FamilyAddIncident'
+import FamilyUpdateIncident from '@/components/FamilyUpdateIncident'
+import AddFamily from '@/components/AddFamily'
+import FamilyManage from '@/components/FamilyManage'
+import FamilyView from '@/components/FamilyView'
+import UpdateFamily from '@/components/UpdateFamily'
+import FamilyIndex from '@/components/FamilyIndex'
+import AddMember from '@/components/AddMember'
+import MemberManage from '@/components/MemberManage'
+import MemberView from '@/components/MemberView'
+import UpdateMember from '@/components/UpdateMember'
+import FamilyMemberManage from '@/components/FamilyMemberManage'
+import FamilyAddMember from '@/components/FamilyAddMember'
+import FamilyUpdateMember from '@/components/FamilyUpdateMember'
+import FamilyTree from '@/components/FamilyTree'
+import FamilyFamilyTree from '@/components/FamilyFamilyTree'
 
-/* Layout */
-import Layout from '@/layout'
-
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard', affix: true }
-    }]
-  },
-
-  {
-    path: '/sys',
-    component: Layout,
-    redirect: '/sys/user',
-    name: 'sysManage',
-    meta: { title: '系统功能', icon: 'sys' },
-    children: [
-      {
-        path: 'user',
-        name: 'User',
-        component: () => import('@/views/sys/user.vue'),
-        meta: { title: '用户管理', icon: 'userManage' }
-      },
-      {
-        path: 'relation',
-        name: 'Relation',
-        component: () => import('@/views/sys/relation.vue'),
-        meta: { title: '角色关系', icon: 'relationManage' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+const routes = [
+    {
+        path: '/',
+        name: 'Moren',
+        component: Login
+    },
+    {
+        path: '/Login',
+        name: 'Login',
+        component: Login
+    },
+    {
+        path: '/Regist',
+        name: 'Regist',
+        component: Regist
+    },
+    {
+        path: '/AddAdmin',
+        name: 'AddAdmin',
+        component: AddAdmin
+    },
+    {
+        path: '/AdminManage',
+        name: 'AdminManage',
+        component: AdminManage
+    },
+    {
+        path: '/AdminView',
+        name: 'AdminView',
+        component: AdminView
+    },
+    {
+        path: '/UpdateAdmin',
+        name: 'UpdateAdmin',
+        component: UpdateAdmin
+    },
+    {
+        path: '/AdminIndex',
+        name: 'AdminIndex',
+        component: AdminIndex
+    },
+    {
+        path: '/AddIncident',
+        name: 'AddIncident',
+        component: AddIncident
+    },
+    {
+        path: '/IncidentManage',
+        name: 'IncidentManage',
+        component: IncidentManage
+    },
+    {
+        path: '/IncidentView',
+        name: 'IncidentView',
+        component: IncidentView
+    },
+    {
+        path: '/UpdateIncident',
+        name: 'UpdateIncident',
+        component: UpdateIncident
+    },
+    {
+        path: '/FamilyIncidentManage',
+        name: 'FamilyIncidentManage',
+        component: FamilyIncidentManage
+    },
+    {
+        path: '/FamilyAddIncident',
+        name: 'FamilyAddIncident',
+        component: FamilyAddIncident
+    },
+    {
+        path: '/FamilyUpdateIncident',
+        name: 'FamilyUpdateIncident',
+        component: FamilyUpdateIncident
+    },
+    {
+        path: '/AddFamily',
+        name: 'AddFamily',
+        component: AddFamily
+    },
+    {
+        path: '/FamilyManage',
+        name: 'FamilyManage',
+        component: FamilyManage
+    },
+    {
+        path: '/FamilyView',
+        name: 'FamilyView',
+        component: FamilyView
+    },
+    {
+        path: '/UpdateFamily',
+        name: 'UpdateFamily',
+        component: UpdateFamily
+    },
+    {
+        path: '/FamilyIndex',
+        name: 'FamilyIndex',
+        component: FamilyIndex
+    },
+    {
+        path: '/AddMember',
+        name: 'AddMember',
+        component: AddMember
+    },
+    {
+        path: '/MemberManage',
+        name: 'MemberManage',
+        component: MemberManage
+    },
+    {
+        path: '/MemberView',
+        name: 'MemberView',
+        component: MemberView
+    },
+    {
+        path: '/UpdateMember',
+        name: 'UpdateMember',
+        component: UpdateMember
+    },
+    {
+        path: '/FamilyMemberManage',
+        name: 'FamilyMemberManage',
+        component: FamilyMemberManage
+    },
+    {
+        path: '/FamilyAddMember',
+        name: 'FamilyAddMember',
+        component: FamilyAddMember
+    },
+    {
+        path: '/FamilyUpdateMember',
+        name: 'FamilyUpdateMember',
+        component: FamilyUpdateMember
+    },
+    {
+        path: '/FamilyTree',
+        name: 'FamilyTree',
+        component: FamilyTree
+    },
+    {
+        path: '/FamilyFamilyTree',
+        name: 'FamilyFamilyTree',
+        component: FamilyFamilyTree
+    }
 ]
-
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+export const router = createRouter({
+    history: createWebHashHistory(),
+    routes: routes
 })
-
-const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
 
 export default router
