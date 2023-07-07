@@ -8,7 +8,7 @@ import router from './router'
 // step1：引入 axios
 import Axios from 'axios'
 
-// Axios.defaults.baseURL='http://localhost:8081/fphsxt'
+// Axios.defaults.baseURL='http://localhost:8080/fphsxt'
 Axios.defaults.withCredentials = true;
 
 // step3：使每次请求都会带一个 /api 前缀
@@ -71,3 +71,4 @@ try {
 
 
 
+ 

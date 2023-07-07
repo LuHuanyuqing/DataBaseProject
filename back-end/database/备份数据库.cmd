@@ -1,2 +1,2 @@
-mysqldump -uroot -proot familytree> familytree4.sql
+mysqldump -uroot -proot patriarchalclan> patriarchalclan4.sql
 

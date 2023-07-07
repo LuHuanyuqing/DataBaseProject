@@ -7,27 +7,27 @@ import AdminManage from '@/components/AdminManage'
 import AdminView from '@/components/AdminView'
 import UpdateAdmin from '@/components/UpdateAdmin'
 import AdminIndex from '@/components/AdminIndex'
-import AddIncident from '@/components/AddIncident'
-import IncidentManage from '@/components/IncidentManage'
-import IncidentView from '@/components/IncidentView'
-import UpdateIncident from '@/components/UpdateIncident'
-import FamilyIncidentManage from '@/components/FamilyIncidentManage'
-import FamilyAddIncident from '@/components/FamilyAddIncident'
-import FamilyUpdateIncident from '@/components/FamilyUpdateIncident'
-import AddFamily from '@/components/AddFamily'
-import FamilyManage from '@/components/FamilyManage'
-import FamilyView from '@/components/FamilyView'
-import UpdateFamily from '@/components/UpdateFamily'
-import FamilyIndex from '@/components/FamilyIndex'
-import AddMember from '@/components/AddMember'
-import MemberManage from '@/components/MemberManage'
-import MemberView from '@/components/MemberView'
-import UpdateMember from '@/components/UpdateMember'
-import FamilyMemberManage from '@/components/FamilyMemberManage'
-import FamilyAddMember from '@/components/FamilyAddMember'
-import FamilyUpdateMember from '@/components/FamilyUpdateMember'
-import FamilyTree from '@/components/FamilyTree'
-import FamilyFamilyTree from '@/components/FamilyFamilyTree'
+import AddTaste from '@/components/AddTaste'
+import TasteManage from '@/components/TasteManage'
+import TasteView from '@/components/TasteView'
+import UpdateTaste from '@/components/UpdateTaste'
+import FortTasteManage from '@/components/FortTasteManage'
+import FortAddTaste from '@/components/FortAddTaste'
+import FortUpdateTaste from '@/components/FortUpdateTaste'
+import AddFort from '@/components/AddFort'
+import FortManage from '@/components/FortManage'
+import FortView from '@/components/FortView'
+import UpdateFort from '@/components/UpdateFort'
+import FortIndex from '@/components/FortIndex'
+import AddWaterdrop from '@/components/AddWaterdrop'
+import WaterdropManage from '@/components/WaterdropManage'
+import WaterdropView from '@/components/WaterdropView'
+import UpdateWaterdrop from '@/components/UpdateWaterdrop'
+import FortWaterdropManage from '@/components/FortWaterdropManage'
+import FortAddWaterdrop from '@/components/FortAddWaterdrop'
+import FortUpdateWaterdrop from '@/components/FortUpdateWaterdrop'
+import Familytree from '@/components/Familytree'
+import FortFamilytree from '@/components/FortFamilytree'
 
 const routes = [
     {
@@ -71,109 +71,109 @@ const routes = [
         component: AdminIndex
     },
     {
-        path: '/AddIncident',
-        name: 'AddIncident',
-        component: AddIncident
+        path: '/AddTaste',
+        name: 'AddTaste',
+        component: AddTaste
     },
     {
-        path: '/IncidentManage',
-        name: 'IncidentManage',
-        component: IncidentManage
+        path: '/TasteManage',
+        name: 'TasteManage',
+        component: TasteManage
     },
     {
-        path: '/IncidentView',
-        name: 'IncidentView',
-        component: IncidentView
+        path: '/TasteView',
+        name: 'TasteView',
+        component: TasteView
     },
     {
-        path: '/UpdateIncident',
-        name: 'UpdateIncident',
-        component: UpdateIncident
+        path: '/UpdateTaste',
+        name: 'UpdateTaste',
+        component: UpdateTaste
     },
     {
-        path: '/FamilyIncidentManage',
-        name: 'FamilyIncidentManage',
-        component: FamilyIncidentManage
+        path: '/FortTasteManage',
+        name: 'FortTasteManage',
+        component: FortTasteManage
     },
     {
-        path: '/FamilyAddIncident',
-        name: 'FamilyAddIncident',
-        component: FamilyAddIncident
+        path: '/FortAddTaste',
+        name: 'FortAddTaste',
+        component: FortAddTaste
     },
     {
-        path: '/FamilyUpdateIncident',
-        name: 'FamilyUpdateIncident',
-        component: FamilyUpdateIncident
+        path: '/FortUpdateTaste',
+        name: 'FortUpdateTaste',
+        component: FortUpdateTaste
     },
     {
-        path: '/AddFamily',
-        name: 'AddFamily',
-        component: AddFamily
+        path: '/AddFort',
+        name: 'AddFort',
+        component: AddFort
     },
     {
-        path: '/FamilyManage',
-        name: 'FamilyManage',
-        component: FamilyManage
+        path: '/FortManage',
+        name: 'FortManage',
+        component: FortManage
     },
     {
-        path: '/FamilyView',
-        name: 'FamilyView',
-        component: FamilyView
+        path: '/FortView',
+        name: 'FortView',
+        component: FortView
     },
     {
-        path: '/UpdateFamily',
-        name: 'UpdateFamily',
-        component: UpdateFamily
+        path: '/UpdateFort',
+        name: 'UpdateFort',
+        component: UpdateFort
     },
     {
-        path: '/FamilyIndex',
-        name: 'FamilyIndex',
-        component: FamilyIndex
+        path: '/FortIndex',
+        name: 'FortIndex',
+        component: FortIndex
     },
     {
-        path: '/AddMember',
-        name: 'AddMember',
-        component: AddMember
+        path: '/AddWaterdrop',
+        name: 'AddWaterdrop',
+        component: AddWaterdrop
     },
     {
-        path: '/MemberManage',
-        name: 'MemberManage',
-        component: MemberManage
+        path: '/WaterdropManage',
+        name: 'WaterdropManage',
+        component: WaterdropManage
     },
     {
-        path: '/MemberView',
-        name: 'MemberView',
-        component: MemberView
+        path: '/WaterdropView',
+        name: 'WaterdropView',
+        component: WaterdropView
     },
     {
-        path: '/UpdateMember',
-        name: 'UpdateMember',
-        component: UpdateMember
+        path: '/UpdateWaterdrop',
+        name: 'UpdateWaterdrop',
+        component: UpdateWaterdrop
     },
     {
-        path: '/FamilyMemberManage',
-        name: 'FamilyMemberManage',
-        component: FamilyMemberManage
+        path: '/FortWaterdropManage',
+        name: 'FortWaterdropManage',
+        component: FortWaterdropManage
     },
     {
-        path: '/FamilyAddMember',
-        name: 'FamilyAddMember',
-        component: FamilyAddMember
+        path: '/FortAddWaterdrop',
+        name: 'FortAddWaterdrop',
+        component: FortAddWaterdrop
     },
     {
-        path: '/FamilyUpdateMember',
-        name: 'FamilyUpdateMember',
-        component: FamilyUpdateMember
+        path: '/FortUpdateWaterdrop',
+        name: 'FortUpdateWaterdrop',
+        component: FortUpdateWaterdrop
     },
     {
-        path: '/FamilyTree',
-        name: 'FamilyTree',
-        component: FamilyTree
+        path: '/Familytree',
+        name: 'Familytree',
+        component: Familytree
     },
     {
-        path: '/FamilyFamilyTree',
-        name: 'FamilyFamilyTree',
-        component: FamilyFamilyTree
+        path: '/FortFamilytree',
+        name: 'FortFamilytree',
+        component: FortFamilytree
     }
 ]
 export const router = createRouter({

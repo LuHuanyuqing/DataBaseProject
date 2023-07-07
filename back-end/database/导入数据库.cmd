@@ -1,2 +1,2 @@
-mysql -uroot -proot < familytree.sql
+mysql -uroot -proot < patriarchalclan.sql
 

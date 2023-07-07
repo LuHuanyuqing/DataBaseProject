@@ -24,264 +24,148 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 public class AdminController {
 
-	private static final Log logger = LogFactory.getLog(AdminController.class);
 
-	@Autowired
-	private AdminServiceImp adminservice;
+    private static final Log logger = LogFactory.getLog(AdminController.class);
 
-	// 定义方法addadmin,响应页面addadmin请求
+    @Autowired
+    private AdminServiceImp adminservice;
 
-	@RequestMapping(value = "addadmin")
 
-	public String addadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
-		// 输出日志，当前执行方法为addadmin
 
-		logger.debug("AdminController.addadmin ......");
 
-		adminservice.addadmin(request, session);
+    @ResponseBody
+    //定义addadminactjson方法
 
-		return "addadmin";
+    @RequestMapping(value = "addadminactjson")
 
-	}
+    public String addadminactjson(HttpServletRequest request, HttpSession session, HttpServletResponse response, @RequestBody Admin admin) throws IOException {
 
-	// 定义addadminact方法,将管理员信息插入到数据库的t_admin表中
+        //输出当前方法日志，表示正在执行AdminController.addadminactjson方法
 
-	@RequestMapping(value = "addadminact")
+        logger.debug("AdminController.addadminactjson ......");
 
-	public String addadminact(HttpServletRequest request, HttpSession session, HttpServletResponse response,
-			Admin admin) throws IOException {
 
-		// 输出当前方法日志，表示正在执行AdminController.addadminact方法
+        //调用服务层addadminact方法
 
-		logger.debug("AdminController.addadminact ......");
+        adminservice.addadminactjson(admin);
 
-		adminservice.addadminact(request, session, admin); // 返回管理员管理方法，执行管理员信息的查询
+        //返回addadmin方法
 
-		return "forward:/adminmanage.action";
+        return "success";
 
-	}
+    }
 
-	@ResponseBody
-	// 定义addadminactjson方法
 
-	@RequestMapping(value = "addadminactjson")
 
-	public String addadminactjson(HttpServletRequest request, HttpSession session, HttpServletResponse response,
-			@RequestBody Admin admin) throws IOException {
 
-		// 输出当前方法日志，表示正在执行AdminController.addadminactjson方法
+    @ResponseBody
+    // 定义updateadminactjson处理管理员修改
 
-		logger.debug("AdminController.addadminactjson ......");
+    @RequestMapping(value = "updateadminactjson")
 
-		// 调用服务层addadminact方法
+    public String updateadminactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Admin admin, HttpSession session) throws IOException {
 
-		adminservice.addadminactjson(admin);
+        // 输出日志，表示正在执行当前方法AdminController.updateadminactjson
 
-		// 返回addadmin方法
+        logger.debug("AdminController.updateadminactjson ......");
 
-		return "success";
+        adminservice.updateadminactjson(admin);
 
-	}
+        return "success";
 
-	// 定义adminmanage方法响应页面请求
+    }
 
-	@RequestMapping(value = "adminmanage")
 
-	public String adminmanage(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+    // 定义deleteadmin,处理删除管理员
 
-		// 输出日志，表示当前正在执行AdminController.adminmanage
+    @RequestMapping(value = "deleteadmin")
 
-		logger.debug("AdminController.adminmanage ......");
+    public String deleteadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session, int id) {
 
-		adminservice.adminmanage(request, session); // 返回到管理员管理页面
+        // 输出日志，表示当前正在执行AdminController.deleteadmin方法
 
-		return "adminmanage";
+        logger.debug("AdminController.deleteadmin ......");
 
-	}
+        adminservice.deleteadmin(request, session, id);
 
-	// 定义 adminview方法
+        // 返回管理员管理方法
 
-	@RequestMapping(value = "adminview")
+        return "forward:/adminmanage.action";
 
-	public String adminview(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+    }
 
-		// 输出日志，表示当前正在执行AdminController.adminview方法
 
-		logger.debug("AdminController.adminview ......");
+    @ResponseBody
+    // 定义deleteadminjson,处理删除管理员
 
-		adminservice.adminview(request, session);
+    @RequestMapping(value = "deleteadminjson")
 
-		// 返回管理员查看页面
+    public String deleteadminjson(HttpServletRequest request, HttpServletResponse response, HttpSession session, int id) {
 
-		return "adminview";
+        // 输出日志，表示当前正在执行AdminController.deleteadmin方法
 
-	}
+        logger.debug("AdminController.deleteadmin ......");
 
-	// 定义 updateadmin方法
+        adminservice.deleteadmin(request, session, id);
 
-	@RequestMapping(value = "updateadmin")
+        return "success";
 
-	public String updateadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session, int id) {
+    }
 
-		// 输出日志AdminController.updateadmin，表示正在执行该方法
 
-		logger.debug("AdminController.updateadmin ......");
 
-		adminservice.updateadmin(request, session, id); // 返回修改管理员页面
 
-		return "updateadmin";
 
-	}
+    @ResponseBody
+    // 定义searchadminjson方法，处理搜索操作
+    @RequestMapping(value = "searchadminjson")
 
-	// 定义updateadminact处理管理员修改
+    public Map searchadminjson(HttpServletRequest request, HttpServletResponse response, HttpSession session, String search) {
 
-	@RequestMapping(value = "updateadminact")
+        // 输出日志，表示当前正在执行AdminController.searchadminjson
 
-	public String updateadminact(HttpServletRequest request, HttpServletResponse response, Admin admin,
-			HttpSession session) throws IOException {
+        logger.debug("AdminController.searchadminjson ......");
 
-		// 输出日志，表示正在执行当前方法AdminController.updateadminact
 
-		logger.debug("AdminController.updateadminact ......");
+        // 定义返回结果
 
-		adminservice.updateadminact(request, admin, session);
+        Map result = new HashMap();
 
-		// 返回管理员管理方法
+        // 获取返回结果
 
-		return "forward:/adminmanage.action";
+        result = adminservice.searchadminjson(search); // 将结果以json返回
 
-	}
+        return result;
 
-	@ResponseBody
-	// 定义updateadminactjson处理管理员修改
+    }
 
-	@RequestMapping(value = "updateadminactjson")
 
-	public String updateadminactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Admin admin,
-			HttpSession session) throws IOException {
 
-		// 输出日志，表示正在执行当前方法AdminController.updateadminactjson
 
-		logger.debug("AdminController.updateadminactjson ......");
 
-		adminservice.updateadminactjson(admin);
+    @ResponseBody
+    // 定义Admin详情方法
 
-		return "success";
+    @RequestMapping(value = "admindetailsjson")
 
-	}
+    public Map admindetailsjson(HttpServletRequest request, HttpSession session, HttpServletResponse response, int id) {
 
-	// 定义deleteadmin,处理删除管理员
+        // 输入日志信息，表名当前执行方法为AdminController.admindetailsjson
 
-	@RequestMapping(value = "deleteadmin")
+        logger.debug("AdminController.admindetailsjson ......");
 
-	public String deleteadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session, int id) {
 
-		// 输出日志，表示当前正在执行AdminController.deleteadmin方法
+        Map result = new HashMap();
 
-		logger.debug("AdminController.deleteadmin ......");
+        result = adminservice.admindetailsjson(id);
 
-		adminservice.deleteadmin(request, session, id);
+        // 将结果以json返回
 
-		// 返回管理员管理方法
+        return result;
 
-		return "forward:/adminmanage.action";
+    }
 
-	}
-
-	@ResponseBody
-	// 定义deleteadminjson,处理删除管理员
-
-	@RequestMapping(value = "deleteadminjson")
-
-	public String deleteadminjson(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			int id) {
-
-		// 输出日志，表示当前正在执行AdminController.deleteadmin方法
-
-		logger.debug("AdminController.deleteadmin ......");
-
-		adminservice.deleteadmin(request, session, id);
-
-		return "success";
-
-	}
-
-	// 定义searchadmin方法，处理搜索操作
-
-	@RequestMapping(value = "searchadmin")
-
-	public String searchadmin(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			String search) {
-
-		// 输出日志，表示当前正在执行AdminController.searchadmin
-
-		logger.debug("AdminController.searchadmin ......");
-
-		adminservice.searchadmin(request, session, search); // 返回查询管理员页面
-
-		return "searchadmin";
-
-	}
-
-	@ResponseBody
-	// 定义searchadminjson方法，处理搜索操作
-	@RequestMapping(value = "searchadminjson")
-
-	public Map searchadminjson(HttpServletRequest request, HttpServletResponse response, HttpSession session,
-			String search) {
-
-		// 输出日志，表示当前正在执行AdminController.searchadminjson
-
-		logger.debug("AdminController.searchadminjson ......");
-
-		// 定义返回结果
-
-		Map result = new HashMap();
-
-		// 获取返回结果
-
-		result = adminservice.searchadminjson(search); // 将结果以json返回
-
-		return result;
-
-	}
-
-	// 定义AdminpinglunMapper
-
-	@RequestMapping(value = "admindetails")
-
-	public String admindetails(HttpServletRequest request, HttpSession session, HttpServletResponse response, int id) {
-
-		// 输入日志信息，表名当前执行方法为AdminController.admindetails
-
-		logger.debug("AdminController.admindetails ......");
-
-		adminservice.admindetails(request, session, id); // 返回管理员详情页面
-
-		return "admindetails";
-
-	}
-
-	@ResponseBody
-	// 定义Admin详情方法
-
-	@RequestMapping(value = "admindetailsjson")
-
-	public Map admindetailsjson(HttpServletRequest request, HttpSession session, HttpServletResponse response, int id) {
-
-		// 输入日志信息，表名当前执行方法为AdminController.admindetailsjson
-
-		logger.debug("AdminController.admindetailsjson ......");
-
-		Map result = new HashMap();
-
-		result = adminservice.admindetailsjson(id);
-
-		// 将结果以json返回
-
-		return result;
-
-	}
 
 }
+

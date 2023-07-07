@@ -3,11 +3,7 @@ package org.spring.springboot.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +13,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.spring.springboot.dao.AdminMapper;
-import org.spring.springboot.dao.FamilyMapper;
+import org.spring.springboot.dao.FortMapper;
 import org.spring.springboot.domain.Admin;
 import org.spring.springboot.domain.AdminExample;
-import org.spring.springboot.domain.Family;
-import org.spring.springboot.domain.FamilyExample;
+import org.spring.springboot.domain.Fort;
+import org.spring.springboot.domain.FortExample;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,848 +32,903 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class loginAndRegistController {
 
-	private static final Log logger = LogFactory.getLog(loginAndRegistController.class);
 
-	@Resource
-	private AdminMapper admindao;
+    private static final Log logger = LogFactory.getLog(loginAndRegistController.class);
 
-	@Autowired
-	private FamilyMapper familydao;
 
-	// 定义login方法，跳转到login页面
+    @Autowired
+    private AdminMapper admindao;
 
-	@RequestMapping(value = "login")
 
-	public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    @Autowired
+    private FortMapper fortdao;
 
-		// 输出日志，当前正在执行程序loginAndRegistController.login
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
-		logger.debug("loginAndRegistController.login ......");
+    //定义login方法，跳转到login页面
 
-		// 返回登录页
+    @RequestMapping(value = "login")
 
-		return "login";
+    public String login(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
-	}
+        //输出日志，当前正在执行程序loginAndRegistController.login
 
-	// 定义regist方法，跳转到regist页面
+        logger.debug("loginAndRegistController.login ......");
 
-	@RequestMapping(value = "regist")
 
-	public String regist(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        //返回登录页
 
-		// 输出日志，当前正在执行程序为loginAndRegistController.regist
+        return "login";
 
-		logger.debug("loginAndRegistController.regist ......");
+    }
 
-		// 返回regist页面
 
-		return "regist";
+    //定义regist方法，跳转到regist页面
 
-	}
+    @RequestMapping(value = "regist")
 
-	// 定义loginact，处理登录
+    public String regist(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
-	@RequestMapping(value = "loginact")
+        //输出日志，当前正在执行程序为loginAndRegistController.regist
 
-	public String loginact(HttpServletRequest request, HttpServletResponse response, Admin admin, String identity,
-			HttpSession session) {
+        logger.debug("loginAndRegistController.regist ......");
 
-		// 输出登录日志，表示当前正在执行loginAndRegistController.loginact
 
-		logger.debug("loginAndRegistController.loginact ......"); // 判断管理员是否与
-																	// identity一致
+        //返回regist页面
 
-		if ("管理员".equals(identity)) {
+        return "regist";
 
-			// 实例化AdminExample
+    }
 
-			AdminExample example = new AdminExample();
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'
-			// and password = '" + admin.getPassword() + "'");
+    //定义loginact，处理登录
 
-			// 实例化AdminExample类的内部类Criteria
+    @RequestMapping(value = "loginact")
 
-			AdminExample.Criteria criteria = example.createCriteria();
+    public String loginact(HttpServletRequest request, HttpServletResponse response, Admin admin, String identity, HttpSession session) {
 
-			// 设置查询参数username等于页面传入的username
+        //输出登录日志，表示当前正在执行loginAndRegistController.loginact
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+        logger.debug("loginAndRegistController.loginact ......"); // 判断管理员是否与 identity一致
 
-			// 设置查询参数password等于页面传入的password
 
-			criteria.andPasswordEqualTo(admin.getPassword());
+        if ("管理员".equals(identity)) {
 
-			// 查询出管理员表中，username和password符合要求数据
+            // 实例化AdminExample
 
-			List<Admin> admins = admindao.selectByExample(example);
+            AdminExample example = new AdminExample();
 
-			// 如果结果为空
 
-			if (admins.isEmpty()) {
+//example.setWhere("and username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'");
 
-				// 将账户或密码错误保存到request中
+            // 实例化AdminExample类的内部类Criteria
 
-				request.setAttribute("message", "账号或密码错误");
+            AdminExample.Criteria criteria = example.createCriteria();
 
-				// 返回登录页面
+            // 设置查询参数username等于页面传入的username
 
-				return "login";
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-			} else {
+            // 设置查询参数password等于页面传入的password
 
-				// 登录成功，将名字保存到session中
+            criteria.andPasswordEqualTo(admin.getPassword());
 
-				session.setAttribute("mingzi", admins.get(0).getUsername());
+            // 查询出管理员表中，username和password符合要求数据
 
-				// 登录成功，将登录用户id保存到session中
+            List<Admin> admins = admindao.selectByExample(example);
 
-				session.setAttribute("id", admins.get(0).getId());
 
-				// 登录成功，将登录用户保存到session中
+            // 如果结果为空
 
-				session.setAttribute("userinfo", admins.get(0));
+            if (admins.isEmpty()) {
 
-				// 登录成功，将登录用户身份保存到session中
+                // 将账户或密码错误保存到request中
 
-				session.setAttribute("identity", identity);
+                request.setAttribute("message", "账号或密码错误");
 
-				return "adminindex";
+                // 返回登录页面
 
-			}
+                return "login";
 
-		} // 判断家族是否与 identity一致
+            } else {
 
-		if ("家族".equals(identity)) {
+                // 登录成功，将名字保存到session中
 
-			// 实例化FamilyExample
+                session.setAttribute("mingzi", admins.get(0).getUsername());
 
-			FamilyExample example = new FamilyExample();
+                // 登录成功，将登录用户id保存到session中
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'
-			// and password = '" + admin.getPassword() + "'");
+                session.setAttribute("id", admins.get(0).getId());
 
-			// 实例化FamilyExample类的内部类Criteria
+                // 登录成功，将登录用户保存到session中
 
-			FamilyExample.Criteria criteria = example.createCriteria();
+                session.setAttribute("userinfo", admins.get(0));
 
-			// 设置查询参数username等于页面传入的username
+                // 登录成功，将登录用户身份保存到session中
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+                session.setAttribute("identity", identity);
 
-			// 设置查询参数password等于页面传入的password
+                return "adminindex";
 
-			criteria.andPasswordEqualTo(admin.getPassword());
+            }
 
-			// 查询出家族表中，username和password符合要求数据
+        } // 判断家族是否与 identity一致
 
-			List<Family> admins = familydao.selectByExample(example);
 
-			// 如果结果为空
+        if ("家族".equals(identity)) {
 
-			if (admins.isEmpty()) {
+            // 实例化FortExample
 
-				// 将账户或密码错误保存到request中
+            FortExample example = new FortExample();
 
-				request.setAttribute("message", "账号或密码错误");
 
-				// 返回登录页面
+//example.setWhere("and username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'");
 
-				return "login";
+            // 实例化FortExample类的内部类Criteria
 
-			} else {
+            FortExample.Criteria criteria = example.createCriteria();
 
-				// 登录成功，将名字保存到session中
+            // 设置查询参数username等于页面传入的username
 
-				session.setAttribute("mingzi", admins.get(0).getName());
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-				// 登录成功，将登录用户id保存到session中
+            // 设置查询参数password等于页面传入的password
 
-				session.setAttribute("id", admins.get(0).getId());
+            criteria.andPasswordEqualTo(admin.getPassword());
 
-				// 登录成功，将登录用户保存到session中
+            // 查询出家族表中，username和password符合要求数据
 
-				session.setAttribute("userinfo", admins.get(0));
+            List<Fort> admins = fortdao.selectByExample(example);
 
-				// 登录成功，将登录用户身份保存到session中
 
-				session.setAttribute("identity", identity);
+            // 如果结果为空
 
-				return "familyindex";
+            if (admins.isEmpty()) {
 
-			}
+                // 将账户或密码错误保存到request中
 
-		} // 将请选择登录身份保存到request的message中
+                request.setAttribute("message", "账号或密码错误");
 
-		request.setAttribute("message", "请选择登录身份");
+                // 返回登录页面
 
-		// 返回到登录页
+                return "login";
 
-		return "login";
+            } else {
 
-	}
+                // 登录成功，将名字保存到session中
 
-	// 定义registact，处理注册
+                session.setAttribute("mingzi", admins.get(0).getName());
 
-	@RequestMapping(value = "registact")
+                // 登录成功，将登录用户id保存到session中
 
-	public String registact(HttpServletRequest request, HttpServletResponse response, Admin admin, String identity,
-			HttpSession session, String repassword) throws Exception {
+                session.setAttribute("id", admins.get(0).getId());
 
-		// 输出注册日志，表示当前正在执行loginAndRegistController.registact
+                // 登录成功，将登录用户保存到session中
 
-		logger.debug("loginAndRegistController.registact ......"); // 判断两次密码是否一致
+                session.setAttribute("userinfo", admins.get(0));
 
-		if (!repassword.equals(admin.getPassword())) {
+                // 登录成功，将登录用户身份保存到session中
 
-			// 将两次密码不一致信息保存到message中
+                session.setAttribute("identity", identity);
 
-			request.setAttribute("message", "两次密码不一致");
-			return "regist";
-		} // 判断管理员和identity是否一致
+                return "fortindex";
 
-		if ("管理员".equals(identity)) {
+            }
 
-			// 实例化AdminExample
+        } //将请选择登录身份保存到request的message中
 
-			AdminExample example = new AdminExample();
+        request.setAttribute("message", "请选择登录身份");
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'");
+        //返回到登录页
 
-			// 实例化AdminExample的内部类Criteria
+        return "login";
 
-			AdminExample.Criteria criteria = example.createCriteria();
 
-			// 设置查询条件username为页面传入的username
+    }
 
-			criteria.andUsernameEqualTo(admin.getUsername());
 
-			// 根据上方查询条件查询管理员表中username为传入username的数据
+    //定义registact，处理注册
 
-			List admins = admindao.selectByExample(example);
+    @RequestMapping(value = "registact")
 
-			// 如果查询结果不为空
+    public String registact(HttpServletRequest request, HttpServletResponse response, Admin admin, String identity, HttpSession session, String repassword) throws Exception {
 
-			if (!admins.isEmpty()) {
+        //输出注册日志，表示当前正在执行loginAndRegistController.registact
 
-				// 将该账户已存在信息保存到request中的message中
+        logger.debug("loginAndRegistController.registact ......"); //判断两次密码是否一致
 
-				request.setAttribute("message", "该账号已存在");
+        if (!repassword.equals(admin.getPassword())) {
 
-				// 返回注册页
+            //将两次密码不一致信息保存到message中
 
-				return "regist";
+            request.setAttribute("message", "两次密码不一致");
+            return "regist";
+        } // 判断管理员和identity是否一致
 
-			} else {
 
-				// 使用admindao的 insert方法将页面传入的管理员数据添加到数据库中
+        if ("管理员".equals(identity)) {
 
-				admindao.insert(admin);
+            // 实例化AdminExample
 
-				// 将注册成功信息保存到request的message中
+            AdminExample example = new AdminExample();
 
-				request.setAttribute("message", "注册成功，请登录");
 
-				// 返回登录页
+//example.setWhere("and username = '" + admin.getUsername() + "'");
 
-				return "login";
+            // 实例化AdminExample的内部类Criteria
 
-			}
+            AdminExample.Criteria criteria = example.createCriteria();
 
-		} // 判断家族和identity是否一致
+            // 设置查询条件username为页面传入的username
 
-		if ("家族".equals(identity)) {
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-			// 实例化FamilyExample
+            // 根据上方查询条件查询管理员表中username为传入username的数据
 
-			FamilyExample example = new FamilyExample();
+            List admins = admindao.selectByExample(example);
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'");
 
-			// 实例化FamilyExample的内部类Criteria
+            // 如果查询结果不为空
 
-			FamilyExample.Criteria criteria = example.createCriteria();
+            if (!admins.isEmpty()) {
 
-			// 设置查询条件username为页面传入的username
+                // 将该账户已存在信息保存到request中的message中
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+                request.setAttribute("message", "该账号已存在");
 
-			// 根据上方查询条件查询家族表中username为传入username的数据
+                // 返回注册页
 
-			List admins = familydao.selectByExample(example);
+                return "regist";
 
-			// 实例化Family
+            } else {
 
-			Family family = new Family();
+                // 使用admindao的 insert方法将页面传入的管理员数据添加到数据库中
 
-			// 设置family的username为admin的username
+                admindao.insert(admin);
 
-			family.setUsername(admin.getUsername());
+                // 将注册成功信息保存到request的message中
 
-			// 设置family的password为admin的password
+                request.setAttribute("message", "注册成功，请登录");
 
-			family.setPassword(admin.getPassword());
+                // 返回登录页
 
-			// 如果查询结果不为空
+                return "login";
 
-			if (!admins.isEmpty()) {
+            }
 
-				// 将该账户已存在信息保存到request中的message中
+        } // 判断家族和identity是否一致
 
-				request.setAttribute("message", "该账号已存在");
 
-				// 返回注册页
+        if ("家族".equals(identity)) {
 
-				return "regist";
+            // 实例化FortExample
 
-			} else {
+            FortExample example = new FortExample();
 
-				// 使用familydao的 insert方法将页面传入的家族数据添加到数据库中
 
-				familydao.insert(family);
+//example.setWhere("and username = '" + admin.getUsername() + "'");
 
-				// 将注册成功信息保存到request的message中
+            // 实例化FortExample的内部类Criteria
 
-				request.setAttribute("message", "注册成功，请登录");
+            FortExample.Criteria criteria = example.createCriteria();
 
-				// 返回登录页
+            // 设置查询条件username为页面传入的username
 
-				return "login";
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-			}
+            // 根据上方查询条件查询家族表中username为传入username的数据
 
-		} // 将请选择注册身份保存到request的message中
+            List admins = fortdao.selectByExample(example);
 
-		request.setAttribute("message", "请选择注册身份");
+            // 实例化Fort
 
-		// 返回到登录页
+            Fort fort = new Fort();
 
-		return "regist";
+            // 设置fort的username为admin的username
 
-	}
+            fort.setUsername(admin.getUsername());
 
-	@ResponseBody
-	// 定义loginactjson，处理登录
+            // 设置fort的password为admin的password
 
-	@RequestMapping(value = "loginactjson")
+            fort.setPassword(admin.getPassword());
 
-	public Map loginactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Map canshu,
-			HttpSession session) {
 
-		// 输出登录日志，表示当前正在执行loginAndRegistController.loginactjson
+            // 如果查询结果不为空
 
-		logger.debug("loginAndRegistController.loginactjson ......");
-		Map result = new HashMap();
-		// 从传入参数中获取身份信息
-		String identity = (String) canshu.get("identity");
-		// 生成用户对象
-		Admin admin = new Admin();
-		// 从传入参数中获取账号信息
-		admin.setUsername((String) canshu.get("username"));
-		// 从传入参数中获取密码信息
-		admin.setPassword((String) canshu.get("password")); // 判断管理员是否与
-															// identity一致
+            if (!admins.isEmpty()) {
 
-		if ("管理员".equals(identity)) {
+                // 将该账户已存在信息保存到request中的message中
 
-			// 实例化AdminExample
+                request.setAttribute("message", "该账号已存在");
 
-			AdminExample example = new AdminExample();
+                // 返回注册页
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'
-			// and password = '" + admin.getPassword() + "'");
+                return "regist";
 
-			// 实例化AdminExample类的内部类Criteria
+            } else {
 
-			AdminExample.Criteria criteria = example.createCriteria();
+                // 使用fortdao的 insert方法将页面传入的家族数据添加到数据库中
 
-			// 设置查询参数username等于页面传入的username
+                fortdao.insert(fort);
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+                // 将注册成功信息保存到request的message中
 
-			// 设置查询参数password等于页面传入的password
+                request.setAttribute("message", "注册成功，请登录");
 
-			criteria.andPasswordEqualTo(admin.getPassword());
+                // 返回登录页
 
-			// 查询出管理员表中，username和password符合要求数据
+                return "login";
 
-			List<Admin> admins = admindao.selectByExample(example);
+            }
 
-			// 如果结果为空
+        } //将请选择注册身份保存到request的message中
 
-			if (admins.isEmpty()) {
+        request.setAttribute("message", "请选择注册身份");
 
-				// 将账户或密码错误保存到message中
+        //返回到登录页
 
-				result.put("message", "账户或密码错误");
-				// 返回resultmap对象
+        return "regist";
 
-				return result;
-			} else {
 
-				// 登录成功，将登录成功保存到message中
+    }
 
-				result.put("message", "登录成功");
-				// 登录成功，将名字保存到result中
 
-				result.put("mingzi", admins.get(0).getUsername());
-				// 登录成功，将登录用户id保存到result中
+    @ResponseBody
+    //定义loginactjson，处理登录
 
-				result.put("id", admins.get(0).getId());
-				// 登录成功，将登录用户保存到result中
+    @RequestMapping(value = "loginactjson")
 
-				result.put("userinfo", admins.get(0));
-				// 登录成功，将登录用户身份保存到result中
+    public Map loginactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Map canshu, HttpSession session) {
 
-				result.put("identity", identity);
+        //输出登录日志，表示当前正在执行loginAndRegistController.loginactjson
 
-				// 返回resultmap对象
+        logger.debug("loginAndRegistController.loginactjson ......");
+        Map result = new HashMap();
+        //从传入参数中获取身份信息
+        String identity = (String) canshu.get("identity");
+        //生成用户对象
+        Admin admin = new Admin();
+        //从传入参数中获取账号信息
+        admin.setUsername((String) canshu.get("username"));
+        //从传入参数中获取密码信息
+        admin.setPassword((String) canshu.get("password")); // 判断管理员是否与 identity一致
 
-				return result;
-			}
 
-		} // 判断家族是否与 identity一致
+        if ("管理员".equals(identity)) {
 
-		if ("家族".equals(identity)) {
+            // 实例化AdminExample
 
-			// 实例化FamilyExample
+            AdminExample example = new AdminExample();
 
-			FamilyExample example = new FamilyExample();
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'
-			// and password = '" + admin.getPassword() + "'");
+//example.setWhere("and username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'");
 
-			// 实例化FamilyExample类的内部类Criteria
+            // 实例化AdminExample类的内部类Criteria
 
-			FamilyExample.Criteria criteria = example.createCriteria();
+            AdminExample.Criteria criteria = example.createCriteria();
 
-			// 设置查询参数username等于页面传入的username
+            // 设置查询参数username等于页面传入的username
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-			// 设置查询参数password等于页面传入的password
+            // 设置查询参数password等于页面传入的password
 
-			criteria.andPasswordEqualTo(admin.getPassword());
+            criteria.andPasswordEqualTo(admin.getPassword());
 
-			// 查询出家族表中，username和password符合要求数据
+            criteria.andStateEqualTo(1);
 
-			List<Family> admins = familydao.selectByExample(example);
+            // 查询出管理员表中，username和password符合要求数据
 
-			// 如果结果为空
+            List<Admin> admins = admindao.selectByExample(example);
 
-			if (admins.isEmpty()) {
 
-				// 将账户或密码错误保存到message中
+            // 如果结果为空
 
-				result.put("message", "账户或密码错误");
-				// 返回resultmap对象
+            if (admins.isEmpty()) {
 
-				return result;
-			} else {
+                // 将账户或密码错误保存到message中
 
-				// 登录成功，将登录成功保存到message中
+                result.put("message", "账户或密码错误");
+                // 返回resultmap对象
 
-				result.put("message", "登录成功");
-				// 登录成功，将名字保存到result中
+                return result;
+            } else {
 
-				result.put("mingzi", admins.get(0).getName());
-				// 登录成功，将登录用户id保存到result中
+                // 登录成功，将登录成功保存到message中
 
-				result.put("id", admins.get(0).getId());
-				// 登录成功，将登录用户保存到result中
+                result.put("message", "登录成功");
+                // 登录成功，将名字保存到result中
 
-				result.put("userinfo", admins.get(0));
-				// 登录成功，将登录用户身份保存到result中
+                result.put("mingzi", admins.get(0).getUsername());
+                // 登录成功，将登录用户id保存到result中
 
-				result.put("identity", identity);
+                result.put("id", admins.get(0).getId());
+                // 登录成功，将登录用户保存到result中
 
-				// 返回resultmap对象
+                result.put("userinfo", admins.get(0));
+                // 登录成功，将登录用户身份保存到result中
 
-				return result;
-			}
+                result.put("identity", identity);
 
-		} // 将请选择登录身份保存到result的message中进行保存
-		result.put("message", "请选择登录身份");
-		// 将result用json格式数据返回页面
-		return result;
-	}
+                // 返回resultmap对象
 
-	@ResponseBody
-	// 定义registactjson，处理注册
+                return result;
+            }
 
-	@RequestMapping(value = "registactjson")
+        } // 判断家族是否与 identity一致
 
-	public Map registactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Map canshu,
-			HttpSession session) throws Exception {
 
-		// 输出注册日志，表示当前正在执行loginAndRegistController.registactjson
+        if ("家族".equals(identity)) {
 
-		logger.debug("loginAndRegistController.registactjson ......");
-		Map result = new HashMap();
-		// 获取当前登录的用户身份
-		// 从传入参数中获取确认密码信息
-		String repassword = (String) canshu.get("repassword");
-		// 从传入参数中获取身份信息
-		String identity = (String) canshu.get("identity");
-		// 生成用户对象
-		Admin admin = new Admin();
-		// 从传入参数中获取账号信息
-		admin.setUsername((String) canshu.get("username"));
-		// 从传入参数中获取密码信息
-		admin.setPassword((String) canshu.get("password")); // 判断两次密码是否一致
+            // 实例化FortExample
 
-		if (!repassword.equals(admin.getPassword())) {
+            FortExample example = new FortExample();
 
-			// 将账号已存在信息保存到result的message中进行保存
-			result.put("message", "两次密码不一致");
-			// 将result用json格式数据返回页面
-			return result;
-		} // 判断管理员和identity是否一致
 
-		if ("管理员".equals(identity)) {
+//example.setWhere("and username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'");
 
-			// 实例化AdminExample
+            // 实例化FortExample类的内部类Criteria
 
-			AdminExample example = new AdminExample();
+            FortExample.Criteria criteria = example.createCriteria();
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'");
+            // 设置查询参数username等于页面传入的username
 
-			// 实例化AdminExample的内部类Criteria
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-			AdminExample.Criteria criteria = example.createCriteria();
+            // 设置查询参数password等于页面传入的password
 
-			// 设置查询条件username为页面传入的username
+            criteria.andPasswordEqualTo(admin.getPassword());
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+            criteria.andStateEqualTo(1);
 
-			// 根据上方查询条件查询管理员表中username为传入username的数据
+            // 查询出家族表中，username和password符合要求数据
 
-			List admins = admindao.selectByExample(example);
+            List<Fort> admins = fortdao.selectByExample(example);
 
-			// 如果查询结果不为空
 
-			if (!admins.isEmpty()) {
+            // 如果结果为空
 
-				// 将账号已存在信息保存到result的message中进行保存
-				result.put("message", "该账号已存在");
-				// 将result用json格式数据返回页面
-				return result;
-			} else {
+            if (admins.isEmpty()) {
 
-				// 使用admindao的 insert方法将页面传入的管理员数据添加到数据库中
+                // 将账户或密码错误保存到message中
 
-				admindao.insert(admin);
+                result.put("message", "账户或密码错误");
+                // 返回resultmap对象
 
-				// 将注册成功，请登录信息保存到result的message中进行保存
-				result.put("message", "注册成功，请登录");
-				// 将result用json格式数据返回页面
-				return result;
-			}
+                return result;
+            } else {
+                // 登录成功，将名字保存到result中
+                result.put("mingzi", admins.get(0).getName());
+                // 登录成功，将登录用户id保存到result中
+                result.put("id", admins.get(0).getId());
+                // 登录成功，将登录用户保存到result中
+                result.put("userinfo", admins.get(0));
+                // 登录成功，将登录用户身份保存到result中
+                result.put("identity", identity);
 
-		} // 判断家族和identity是否一致
+                try {
+                    // 生成随机的UUID
+                    UUID uuid = UUID.randomUUID();
+                    // 去掉UUID中的"-"符号，并转换为大写
+                    String token = uuid.toString().replaceAll("-", "").toUpperCase();
+                    // 截取前32位作为Token
+                    token = token.substring(0, 32);
 
-		if ("家族".equals(identity)) {
+                    String key = String.valueOf(admins.get(0).getId());
+                    if (redisTemplate.opsForHash().hasKey("token_data", key)) {
+                        redisTemplate.opsForHash().delete("token_data", key);
+                    }
+                    redisTemplate.opsForHash().put("token_data", key, token);
 
-			// 实例化FamilyExample
+                    // 登录成功，将登录成功保存到message中
+                    result.put("message", "登录成功");
+                    result.put("token", token);
+                } catch (Exception e) {
+                    System.out.println("数据缓存至redis失败");
+                    //throw new RuntimeException("数据缓存至redis失败");
+                    // 登录成功，将登录成功保存到message中
+                    result.put("message", "登录失败");
+                }
 
-			FamilyExample example = new FamilyExample();
+                // 返回resultmap对象
+                return result;
+            }
 
-			// example.setWhere("and username = '" + admin.getUsername() + "'");
+        }        //将请选择登录身份保存到result的message中进行保存
+        result.put("message", "请选择登录身份");
+        //将result用json格式数据返回页面
+        return result;
+    }
 
-			// 实例化FamilyExample的内部类Criteria
 
-			FamilyExample.Criteria criteria = example.createCriteria();
+    @ResponseBody
+    //定义registactjson，处理注册
 
-			// 设置查询条件username为页面传入的username
+    @RequestMapping(value = "registactjson")
 
-			criteria.andUsernameEqualTo(admin.getUsername());
+    public Map registactjson(HttpServletRequest request, HttpServletResponse response, @RequestBody Map canshu, HttpSession session) throws Exception {
 
-			// 根据上方查询条件查询家族表中username为传入username的数据
+        //输出注册日志，表示当前正在执行loginAndRegistController.registactjson
 
-			List admins = familydao.selectByExample(example);
+        logger.debug("loginAndRegistController.registactjson ......");
+        Map result = new HashMap();
+        //获取当前登录的用户身份
+        //从传入参数中获取确认密码信息
+        String repassword = (String) canshu.get("repassword");
+        //从传入参数中获取身份信息
+        String identity = (String) canshu.get("identity");
+        //生成用户对象
+        Admin admin = new Admin();
+        //从传入参数中获取账号信息
+        admin.setUsername((String) canshu.get("username"));
+        //从传入参数中获取密码信息
+        admin.setPassword((String) canshu.get("password")); //判断两次密码是否一致
 
-			// 实例化Family
+        if (!repassword.equals(admin.getPassword())) {
 
-			Family family = new Family();
+            // 将账号已存在信息保存到result的message中进行保存
+            result.put("message", "两次密码不一致");
+            // 将result用json格式数据返回页面
+            return result;
+        } // 判断管理员和identity是否一致
 
-			// 设置family的username为admin的username
 
-			family.setUsername(admin.getUsername());
+        if ("管理员".equals(identity)) {
 
-			// 设置family的password为admin的password
+            // 实例化AdminExample
 
-			family.setPassword(admin.getPassword());
+            AdminExample example = new AdminExample();
 
-			// 如果查询结果不为空
 
-			if (!admins.isEmpty()) {
+//example.setWhere("and username = '" + admin.getUsername() + "'");
 
-				// 将账号已存在信息保存到result的message中进行保存
-				result.put("message", "该账号已存在");
-				// 将result用json格式数据返回页面
-				return result;
-			} else {
-				Date currentTime = new Date();
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String formattedTime = formatter.format(currentTime);
-				family.setCreatetime(formattedTime);
+            // 实例化AdminExample的内部类Criteria
 
-				// 使用familydao的 insert方法将页面传入的家族数据添加到数据库中
-				familydao.insert(family);
+            AdminExample.Criteria criteria = example.createCriteria();
 
-				// 将注册成功，请登录信息保存到result的message中进行保存
-				result.put("message", "注册成功，请登录");
+            // 设置查询条件username为页面传入的username
 
-				// 将result用json格式数据返回页面
-				return result;
-			}
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-		} // 将请选择注册身份保存到result的message中进行保存
-		result.put("message", "请选择注册身份");
-		// 将result用json格式数据返回页面
-		return result;
-	}
+            // 根据上方查询条件查询管理员表中username为传入username的数据
 
-	// 定义exitsystem方法，清除系统中的session数据
+            List admins = admindao.selectByExample(example);
 
-	@RequestMapping(value = "exitsystem")
 
-	public String exitsystem(HttpServletRequest request, HttpServletResponse response, Admin admin,
-			HttpSession session) {
+            // 如果查询结果不为空
 
-		// 输出日志，表示当前正在执行loginAndRegistController.exitsystem
+            if (!admins.isEmpty()) {
 
-		logger.debug("loginAndRegistController.exitsystem ......");
+                //将账号已存在信息保存到result的message中进行保存
+                result.put("message", "该账号已存在");
+                //将result用json格式数据返回页面
+                return result;
+            } else {
+                admin.setState(1);
 
-		// 清除session中的数据信息
+                // 使用admindao的 insert方法将页面传入的管理员数据添加到数据库中
+                admindao.insert(admin);
 
-		session.invalidate();
+                //将注册成功，请登录信息保存到result的message中进行保存
+                result.put("message", "注册成功，请登录");
 
-		// 返回到登录页
+                //将result用json格式数据返回页面
+                return result;
+            }
 
-		return "login";
+        } // 判断家族和identity是否一致
 
-	}
 
-	// 定义adminindex方法
+        if ("家族".equals(identity)) {
 
-	@RequestMapping(value = "adminindex")
+            // 实例化FortExample
 
-	public String adminindex(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+            FortExample example = new FortExample();
 
-		// 输出日志，表示当前正在执行loginAndRegistController.adminindex
 
-		logger.debug("loginAndRegistController.adminindex ......");
+//example.setWhere("and username = '" + admin.getUsername() + "'");
 
-		// 返回adminindex页面
+            // 实例化FortExample的内部类Criteria
 
-		return "adminindex";
+            FortExample.Criteria criteria = example.createCriteria();
 
-	} // 定义familyindex方法
+            // 设置查询条件username为页面传入的username
 
-	@RequestMapping(value = "familyindex")
+            criteria.andUsernameEqualTo(admin.getUsername());
 
-	public String familyindex(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+            // 根据上方查询条件查询家族表中username为传入username的数据
 
-		// 输出日志，表示当前正在执行loginAndRegistController.familyindex
+            List admins = fortdao.selectByExample(example);
 
-		logger.debug("loginAndRegistController.familyindex ......");
+            // 实例化Fort
 
-		// 返回familyindex页面
+            Fort fort = new Fort();
 
-		return "familyindex";
+            // 设置fort的username为admin的username
 
-	} // 定义adminupdategerenxinxiact方法
+            fort.setUsername(admin.getUsername());
 
-	@RequestMapping(value = "adminupdategerenxinxiact")
+            // 设置fort的password为admin的password
 
-	public String adminupdategerenxinxiact(HttpServletRequest request, HttpServletResponse response, Admin admin,
-			HttpSession session) throws IOException {
+            fort.setPassword(admin.getPassword());
 
-		// 输出日志，表示正在执行loginAndRegistController.adminupdategerenxinxiact
 
-		logger.debug("loginAndRegistController.adminupdategerenxinxiact ......");
+            // 如果查询结果不为空
 
-		// 调用admindao的updateByPrimaryKey方法修改管理员信息
+            if (!admins.isEmpty()) {
 
-		admindao.updateByPrimaryKeySelective(admin);
+                //将账号已存在信息保存到result的message中进行保存
+                result.put("message", "该账号已存在");
+                //将result用json格式数据返回页面
+                return result;
+            } else {
+                fort.setState(1);
 
-		// 将修改后的名字同步到session中
+                // 使用fortdao的 insert方法将页面传入的家族数据添加到数据库中
+                fortdao.insert(fort);
 
-		session.setAttribute("mingzi", admin.getUsername());
+                //将注册成功，请登录信息保存到result的message中进行保存
+                result.put("message", "注册成功，请登录");
 
-		// 将修改后的id同步到session中
+                //将result用json格式数据返回页面
+                return result;
+            }
 
-		session.setAttribute("id", admin.getId());
+        }        //将请选择注册身份保存到result的message中进行保存
+        result.put("message", "请选择注册身份");
+        //将result用json格式数据返回页面
+        return result;
+    }
 
-		// 将修改后的userinfo同步到session中
 
-		session.setAttribute("userinfo", admin);
+    //定义exitsystem方法，清除系统中的session数据
 
-		// 将修改个人信息成功保存到request的message中
+    @RequestMapping(value = "exitsystem")
 
-		request.setAttribute("message", "修改个人信息成功");
+    public String exitsystem(HttpServletRequest request, HttpServletResponse response, Admin admin, HttpSession session) {
 
-		// 返回到adminindex中
+        // 输出日志，表示当前正在执行loginAndRegistController.exitsystem
 
-		return "adminindex";
+        logger.debug("loginAndRegistController.exitsystem ......");
 
-	} // 定义familyupdategerenxinxiact方法
+        // 清除session中的数据信息
 
-	@RequestMapping(value = "familyupdategerenxinxiact")
+        session.invalidate();
 
-	public String familyupdategerenxinxiact(HttpServletRequest request, HttpServletResponse response, Family family,
-			HttpSession session) throws IOException {
 
-		// 输出日志，表示正在执行loginAndRegistController.familyupdategerenxinxiact
+        // 返回到登录页
 
-		logger.debug("loginAndRegistController.familyupdategerenxinxiact ......");
+        return "login";
 
-		// 调用familydao的updateByPrimaryKey方法修改家族信息
+    }
 
-		familydao.updateByPrimaryKeySelective(family);
 
-		// 将修改后的名字同步到session中
+    // 定义adminindex方法
 
-		session.setAttribute("mingzi", family.getName());
+    @RequestMapping(value = "adminindex")
 
-		// 将修改后的id同步到session中
+    public String adminindex(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
 
-		session.setAttribute("id", family.getId());
+        // 输出日志，表示当前正在执行loginAndRegistController.adminindex
 
-		// 将修改后的userinfo同步到session中
+        logger.debug("loginAndRegistController.adminindex ......");
 
-		session.setAttribute("userinfo", family);
+        // 返回adminindex页面
 
-		// 将修改个人信息成功保存到request的message中
 
-		request.setAttribute("message", "修改个人信息成功");
+        return "adminindex";
 
-		// 返回到familyindex中
+    } // 定义fortindex方法
 
-		return "familyindex";
+    @RequestMapping(value = "fortindex")
 
-	}
+    public String fortindex(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
 
-	// 返回json字符串
-	@ResponseBody
-	// 添加文件ajax处理
-	@RequestMapping(value = "addfilejson")
-	public String addfilejson(HttpServletRequest request, HttpServletResponse response, MultipartFile file,
-			HttpSession session) throws IOException {
-		// 表示当前正在执行loginAndRegistController的addfilejson方法
-		logger.debug("loginAndRegistController.addfilejson ......");
-		// 调用uploadUtile方法上传文件并返回文件地址
-		String filepath = uploadUtile(file, request);
-		// 将文件地址返回
-		return filepath;
-	}
+        // 输出日志，表示当前正在执行loginAndRegistController.fortindex
 
-	// @ResponseBody
-	// @RequestMapping(value = "executeadd")
-	// public Map executeadd(HttpServletRequest request, HttpServletResponse
-	// response, HttpSession session, String sql) {
-	//
-	// Map result = new HashMap();
-	//
-	// System.out.println(sql);
-	//
-	// tabledao.executeadd(sql);
-	//
-	// result.put("code", "202");
-	// result.put("message", "执行成功");
-	//
-	// return result;
-	// }
-	//
-	// @ResponseBody
-	// @RequestMapping(value = "executequery")
-	// public Map executequery(HttpServletRequest request, HttpServletResponse
-	// response, HttpSession session, String sql) {
-	//
-	// Map result = new HashMap();
-	//
-	// System.out.println(sql);
-	//
-	// List<Map> resultall = tabledao.executequery(sql);
-	//
-	// result.put("code", "202");
-	// result.put("message", "执行成功");
-	// result.put("result", resultall);
-	//
-	// return result;
-	// }
-	//
-	// @ResponseBody
-	// @RequestMapping(value = "queryone")
-	// public Map queryone(HttpServletRequest request, HttpServletResponse
-	// response, HttpSession session, String sql) {
-	//
-	// Map result = new HashMap();
-	//
-	// System.out.println(sql);
-	//
-	// Map reultitem = tabledao.queryone(sql);
-	//
-	// result.put("code", "202");
-	// result.put("message", "执行成功");
-	// result.put("result", reultitem);
-	//
-	// return result;
-	// }
+        logger.debug("loginAndRegistController.fortindex ......");
 
-	// 上传文件图片等
+        // 返回fortindex页面
 
-	public String uploadUtile(MultipartFile file, HttpServletRequest request) throws IOException {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSS");
+        return "fortindex";
 
-		String res = sdf.format(new Date());
+    } //定义adminupdategerenxinxiact方法
 
-		// uploads文件夹位置
 
-		String rootPath = request.getSession().getServletContext().getRealPath("resource/uploads/");
+    @RequestMapping(value = "adminupdategerenxinxiact")
 
-		// 原始名称
+    public String adminupdategerenxinxiact(HttpServletRequest request, HttpServletResponse response, Admin admin, HttpSession session) throws IOException {
 
-		String originalFileName = file.getOriginalFilename();
+        //输出日志，表示正在执行loginAndRegistController.adminupdategerenxinxiact
 
-		// 新文件名
+        logger.debug("loginAndRegistController.adminupdategerenxinxiact ......");
 
-		String newFileName = "sliver" + res + originalFileName.substring(originalFileName.lastIndexOf("."));
 
-		// 创建年月文件夹
+        //调用admindao的updateByPrimaryKey方法修改管理员信息
 
-		Calendar date = Calendar.getInstance();
+        admindao.updateByPrimaryKeySelective(admin);
 
-		File dateDirs = new File(date.get(Calendar.YEAR) + File.separator + (date.get(Calendar.MONTH) + 1));
 
-		// 新文件
+        //将修改后的名字同步到session中
 
-		File newFile = new File(rootPath + File.separator + dateDirs + File.separator + newFileName);
+        session.setAttribute("mingzi", admin.getUsername());
 
-		// 判断目标文件所在目录是否存在
+        //将修改后的id同步到session中
 
-		if (!newFile.getParentFile().exists()) {
+        session.setAttribute("id", admin.getId());
 
-			// 如果目标文件所在的目录不存在，则创建父目录
+        //将修改后的userinfo同步到session中
 
-			newFile.getParentFile().mkdirs();
+        session.setAttribute("userinfo", admin);
 
-		}
 
-		System.out.println(newFile);
+        //将修改个人信息成功保存到request的message中
 
-		// 将内存中的数据写入磁盘
+        request.setAttribute("message", "修改个人信息成功");
 
-		file.transferTo(newFile);
+        //返回到adminindex中
 
-		// 完整的url
+        return "adminindex";
 
-		String fileUrl = date.get(Calendar.YEAR) + "/" + (date.get(Calendar.MONTH) + 1) + "/" + newFileName;
+    } //定义fortupdategerenxinxiact方法
 
-		return fileUrl;
 
-	}
+    @RequestMapping(value = "fortupdategerenxinxiact")
+
+    public String fortupdategerenxinxiact(HttpServletRequest request, HttpServletResponse response, Fort fort, HttpSession session) throws IOException {
+
+        //输出日志，表示正在执行loginAndRegistController.fortupdategerenxinxiact
+
+        logger.debug("loginAndRegistController.fortupdategerenxinxiact ......");
+
+
+        //调用fortdao的updateByPrimaryKey方法修改家族信息
+
+        fortdao.updateByPrimaryKeySelective(fort);
+
+
+        //将修改后的名字同步到session中
+
+        session.setAttribute("mingzi", fort.getName());
+
+        //将修改后的id同步到session中
+
+        session.setAttribute("id", fort.getId());
+
+        //将修改后的userinfo同步到session中
+
+        session.setAttribute("userinfo", fort);
+
+
+        //将修改个人信息成功保存到request的message中
+
+        request.setAttribute("message", "修改个人信息成功");
+
+        //返回到fortindex中
+
+        return "fortindex";
+
+    }
+
+
+    //返回json字符串
+    @ResponseBody
+    //添加文件ajax处理
+    @RequestMapping(value = "addfilejson")
+    public String addfilejson(HttpServletRequest request, HttpServletResponse response, MultipartFile file, HttpSession session) throws IOException {
+        //表示当前正在执行loginAndRegistController的addfilejson方法
+        logger.debug("loginAndRegistController.addfilejson ......");
+        //调用uploadUtile方法上传文件并返回文件地址
+        String filepath = uploadUtile(file, request);
+        //将文件地址返回
+        return filepath;
+    }
+
+//	@ResponseBody
+//	@RequestMapping(value = "executeadd")
+//	public Map executeadd(HttpServletRequest request, HttpServletResponse response, HttpSession session, String sql) {
+//
+//		Map result = new HashMap();
+//
+//		System.out.println(sql);
+//
+//		tabledao.executeadd(sql);
+//
+//		result.put("code", "202");
+//		result.put("message", "执行成功");
+//
+//		return result;
+//	}
+//
+//	@ResponseBody
+//	@RequestMapping(value = "executequery")
+//	public Map executequery(HttpServletRequest request, HttpServletResponse response, HttpSession session, String sql) {
+//
+//		Map result = new HashMap();
+//
+//		System.out.println(sql);
+//
+//		List<Map> resultall = tabledao.executequery(sql);
+//
+//		result.put("code", "202");
+//		result.put("message", "执行成功");
+//		result.put("result", resultall);
+//
+//		return result;
+//	}
+//
+//	@ResponseBody
+//	@RequestMapping(value = "queryone")
+//	public Map queryone(HttpServletRequest request, HttpServletResponse response, HttpSession session, String sql) {
+//
+//		Map result = new HashMap();
+//
+//		System.out.println(sql);
+//
+//		Map reultitem = tabledao.queryone(sql);
+//
+//		result.put("code", "202");
+//		result.put("message", "执行成功");
+//		result.put("result", reultitem);
+//
+//		return result;
+//	}
+
+
+//	上传文件图片等
+
+    public String uploadUtile(MultipartFile file, HttpServletRequest request) throws IOException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSS");
+
+        String res = sdf.format(new Date());
+
+        // uploads文件夹位置
+
+        String rootPath = request.getSession().getServletContext().getRealPath("resource/uploads/");
+
+        // 原始名称
+
+        String originalFileName = file.getOriginalFilename();
+
+        // 新文件名
+
+        String newFileName = "sliver" + res + originalFileName.substring(originalFileName.lastIndexOf("."));
+
+        // 创建年月文件夹
+
+        Calendar date = Calendar.getInstance();
+
+        File dateDirs = new File(date.get(Calendar.YEAR) + File.separator + (date.get(Calendar.MONTH) + 1));
+
+        // 新文件
+
+        File newFile = new File(rootPath + File.separator + dateDirs + File.separator + newFileName);
+
+        // 判断目标文件所在目录是否存在
+
+        if (!newFile.getParentFile().exists()) {
+
+            // 如果目标文件所在的目录不存在，则创建父目录
+
+            newFile.getParentFile().mkdirs();
+
+        }
+
+        System.out.println(newFile);
+
+        // 将内存中的数据写入磁盘
+
+        file.transferTo(newFile);
+
+        // 完整的url
+
+        String fileUrl = date.get(Calendar.YEAR) + "/" + (date.get(Calendar.MONTH) + 1) + "/" + newFileName;
+
+        return fileUrl;
+
+    }
 }
+

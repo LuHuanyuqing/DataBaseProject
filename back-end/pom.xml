@@ -24,7 +24,7 @@
   </properties>
 
   <dependencies>
-
+    	
     	<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -50,34 +50,34 @@
             <artifactId>tomcat-embed-jasper</artifactId>
         </dependency>
 		<!-- mysql 数据库驱动. -->
-		<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-                <version>8.0.17</version>
-		</dependency>
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.17</version>
+      </dependency>
         <!-- mybatis -->
 		<dependency>
 		    <groupId>org.mybatis.spring.boot</groupId>
 		    <artifactId>mybatis-spring-boot-starter</artifactId>
 		    <version>1.1.1</version>
 		</dependency>
-
-
+		
+		
 		    	<!-- alibaba的druid数据库连接池 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.0.11</version>
         </dependency>
-
+    	
     	<!-- alibaba的druid数据库连接池 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.0</version>
         </dependency>
-
-
+        
+        
         <!-- spring boot devtools 开发者热部署 -->
 		<dependency>
             <groupId>org.springframework.boot</groupId>
@@ -96,9 +96,18 @@
             <scope>test</scope>
         </dependency>
 
-
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-redis</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>fastjson</artifactId>
+          <version>1.2.75</version>
+      </dependency>
+        
   </dependencies>
-
+  
   <!-- . -->
 	<build>
 		<plugins>
@@ -112,6 +121,6 @@
 	            </configuration>
 	        </plugin>
 		</plugins>
-
-	</build>
+		
+	</build>	
 </project>

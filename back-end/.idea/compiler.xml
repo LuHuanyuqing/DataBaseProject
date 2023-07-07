@@ -9,5 +9,8 @@
         <module name="springboot" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="patriarchalclan" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>

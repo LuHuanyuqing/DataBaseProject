@@ -12,7 +12,7 @@
 		</commentGenerator>
 		<!--数据库链接地址账号密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost/familytree" userId="root"
+			connectionURL="jdbc:mysql://localhost/patriarchalclan" userId="root"
 			password="root">
 		</jdbcConnection>
 		<javaTypeResolver>
@@ -34,6 +34,6 @@
 			targetPackage="org.spring.springboot.dao" targetProject="../src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-<table tableName="t_admin" domainObjectName="Admin"></table><table tableName="t_incident" domainObjectName="Incident"></table><table tableName="t_family" domainObjectName="Family"></table><table tableName="t_member" domainObjectName="Member"></table>	</context>
+<table tableName="t_admin" domainObjectName="Admin"></table><table tableName="t_taste" domainObjectName="Taste"></table><table tableName="t_fort" domainObjectName="Fort"></table><table tableName="t_waterdrop" domainObjectName="Waterdrop"></table>	</context>
 </generatorConfiguration>
 
